@@ -1,0 +1,27 @@
+{
+  "name": "kctx",
+  "version": "1.0.0",
+  "description": "Kubernetes context tool",
+  "main": "kctx.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krix38/kctx.git"
+  },
+  "type": "module",
+  "author": "krix",
+  "license": "MIT",
+  "bin": {
+    "kctx": "./kctx.js"
+  },
+  "bugs": {
+    "url": "https://github.com/krix38/kctx/issues"
+  },
+  "homepage": "https://github.com/krix38/kctx#readme",
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "yargs": "^17.6.2"
+  }
+}
