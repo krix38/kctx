@@ -47,14 +47,16 @@ const applyColorRule = (contextName) => {
 const colorError = (line) => applyColor(colors.red)("ERROR: " + line);
 
 const getKubeConfig = () => {
-    const kubeConfigPath = homedir() + "/.kube/config";
+    const pathFromVariable = process.env.KUBECONFIG;
+    const kubeConfigPath = pathFromVariable || homedir() + "/.kube/config";
     const kubeConfigYaml = readFileSync(kubeConfigPath, 'utf-8');
     return load(kubeConfigYaml);
 }
 
 const loadContextsNames = (kubeConfig) => kubeConfig.contexts.map(context => context.name);
 
-const getContextsCommand = (kubeConfig) => () => {
+const getContextsCommand = () => {
+    const kubeConfig = getKubeConfig();
     const selectedcontext = kubeConfig["current-context"];
     const contextNames = loadContextsNames(kubeConfig);
     contextNames.forEach(contextName => {
@@ -64,7 +66,8 @@ const getContextsCommand = (kubeConfig) => () => {
     })
 }
 
-const printSelectedcontextPromptCommand = (kubeConfig) => () => {
+const printSelectedcontextPromptCommand = () => {
+    const kubeConfig = getKubeConfig();
     const selectedcontext = kubeConfig["current-context"];
     const selectedNamespace = kubeConfig.contexts
         .filter(context => context.context === selectedcontext)
@@ -74,7 +77,8 @@ const printSelectedcontextPromptCommand = (kubeConfig) => () => {
     console.log(line);
 }
 
-const setContextCommand = (kubeConfig) => (argv) => {
+const setContextCommand = (argv) => {
+    const kubeConfig = getKubeConfig();
     const contextNameToBeSelected = argv.name;
     const contextNames = loadContextsNames(kubeConfig);
     const fullcontextName = contextNames.filter(contextName => contextName.includes(contextNameToBeSelected));
@@ -96,11 +100,11 @@ yargs(process.argv.slice(2))
     .command(
         "ls", 
         "Prints available contexts", 
-        getContextsCommand(getKubeConfig()))
+        getContextsCommand)
     .command(
         "p", 
         "Prints context prompt", 
-        printSelectedcontextPromptCommand(getKubeConfig()))
+        printSelectedcontextPromptCommand)
     .command(
         "s [name]", 
         "Switches context name", 
@@ -112,6 +116,6 @@ yargs(process.argv.slice(2))
                         .map(result => shellEscape(result)))
                     )
                 ), 
-        setContextCommand(getKubeConfig()))
+        setContextCommand)
     .demandCommand()
     .argv;
