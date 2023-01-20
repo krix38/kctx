@@ -66,7 +66,7 @@ const getContextsCommand = () => {
     })
 }
 
-const printSelectedcontextPromptCommand = () => {
+const printSelectedContextPromptCommand = () => {
     const kubeConfig = getKubeConfig();
     const selectedcontext = kubeConfig["current-context"];
     const selectedNamespace = kubeConfig.contexts
@@ -104,7 +104,7 @@ yargs(process.argv.slice(2))
     .command(
         "p", 
         "Prints context prompt", 
-        printSelectedcontextPromptCommand)
+        printSelectedContextPromptCommand)
     .command(
         "s [name]", 
         "Switches context name", 
