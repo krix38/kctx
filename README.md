@@ -9,7 +9,7 @@ functionalities:
 
 ## Installation
 
-`npm install -g .`
+`npm install -g kctx`
 
 ### Prompt setup
 
