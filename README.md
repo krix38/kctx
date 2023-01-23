@@ -11,3 +11,18 @@ functionalities:
 
 `npm install -g .`
 
+### Prompt setup
+
+zsh:
+
+```
+setopt PROMPT_SUBST
+PROMPT=$'$(echo $(kctx p))'$'\n'$PROMPT
+```
+
+bash:
+```
+export PS1='$(kctx p)'$'\n'$PS1
+```
+
+For context name completions use yargs `completions` on `s` command.
