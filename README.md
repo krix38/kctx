@@ -2,9 +2,10 @@
 Kubernetes context tool.
 
 functionalities:
-- switches k8s context (you can pass words that are included in context name, like "dev"), supports yargs completions
-- prints prompt for ps1 (tested on bash and zsh on MacOS) with colored output (configurable by `colorRules` json in script)
-- prints all available contexts
+- `s` - switches k8s context (you can pass words that are included in context name, like "dev"), supports yargs completions
+- `p` - prints prompt for ps1 (tested on bash and zsh on MacOS) with colored output (configurable by `~/.kctx.json` config file)
+- `c` - prints all available colors
+- `ls` - prints all available contexts
 
 
 ## Installation

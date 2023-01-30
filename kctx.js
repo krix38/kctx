@@ -5,15 +5,26 @@
 import { exec } from "child_process";
 import { load } from "js-yaml";
 import { homedir } from "os";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, writeFileSync } from "fs";
 import yargs from "yargs";
 
 const colors = {
-    red: 31,
-    green: 32,
-    yellow: 33,
-    lightCyan: 96,
-    lightBlue: 94
+    "black": 30,
+    "red": 31,
+    "green": 32,
+    "yellow": 33,
+    "blue": 34,
+    "magenta": 35,
+    "cyan": 36,
+    "lightGray": 37,
+    "gray": 90,
+    "lightRed": 91,
+    "lightGreen": 92,
+    "lightYellow": 93,
+    "lightBlue": 94,
+    "lightMagenta": 95,
+    "lightCyan": 96,
+    "white": 97
 }
 
 const getCurrentShell = () => {
@@ -21,25 +32,35 @@ const getCurrentShell = () => {
     return shellPath.substring(shellPath.lastIndexOf('/') + 1);
 }
 
-const applyColor = (color, escapeForZsh) => (text) => {
+const applyColor = (color, escapeForZsh, text) => (text) => {
     if(escapeForZsh && getCurrentShell === "zsh") {
         return "\\e[" + color + ";1m" + text + "\\e[0m";
     }
     return "\x1B[" + color + "m\x1B[1m" + text + "\x1B[22m\x1B[39m"
 }
 
-const colorRules = {
-    "dev": applyColor(colors.green, true),
-    "staging": applyColor(colors.yellow, true),
-    "prod": applyColor(colors.red, true)
+const colorRulesDefaults = {
+    "dev": "green",
+    "staging": "yellow",
+    "prod": "red"
+}
+
+const loadRulesConfig = () => {
+    const configPath = homedir() + "/.kctx.json";
+    if (existsSync(configPath)) {
+        return JSON.parse(readFileSync(configPath));
+    }
+    writeFileSync(configPath, JSON.stringify(colorRulesDefaults, null, 2));
+    return colorRulesDefaults;
 }
 
 const shellEscape = (str) => str.replaceAll(":", "\\:");
 
 const applyColorRule = (contextName) => {
-    const colorRuleKey = Object.keys(colorRules).filter(ruleKey => contextName.includes(ruleKey));
+    const rulesConfig = loadRulesConfig();
+    const colorRuleKey = Object.keys(rulesConfig).filter(ruleKey => contextName.includes(ruleKey));
     if (colorRuleKey.length > 0) {
-        return colorRules[colorRuleKey[0]](contextName);
+        return applyColor(colors[rulesConfig[colorRuleKey[0]]], true)(contextName);
     }
     return contextName;
 }
@@ -94,6 +115,10 @@ const setContextCommand = (argv) => {
     }
 }
 
+const printColorsCommand = () => 
+    Object.keys(colors)
+        .forEach(colorKey => console.log(applyColor(colors[colorKey])("• " + colorKey)));
+
 yargs(process.argv.slice(2))
     .scriptName("kctx")
     .usage("$0 <cmd> [params]")
@@ -101,6 +126,10 @@ yargs(process.argv.slice(2))
         "ls", 
         "Prints available contexts", 
         getContextsCommand)
+    .command(
+        "c",
+        "Print available colors",
+        printColorsCommand)
     .command(
         "p", 
         "Prints context prompt", 
