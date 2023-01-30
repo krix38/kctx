@@ -1,6 +1,6 @@
 {
   "name": "kctx",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Kubernetes context tool",
   "main": "kctx.js",
   "scripts": {
