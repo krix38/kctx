@@ -20,6 +20,7 @@
     "url": "https://github.com/krix38/kctx/issues"
   },
   "homepage": "https://github.com/krix38/kctx#readme",
+  "keywords": ["kubernetes", "k8s", "cli"],
   "dependencies": {
     "js-yaml": "^4.1.0",
     "yargs": "^17.6.2"
